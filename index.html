@@ -215,7 +215,7 @@
                     html += '<b>Audio (MP3/M4A):</b><ul>';
                     data.audio.forEach(f => {
                         if (f.ext === 'mp3' || f.ext === 'm4a') {
-                            html += `<li><a href="${f.url}" target="_blank">${f.ext} - ${Math.round((f.filesize||0)/1024/1024*100)/100||'?'} MB</a></li>`;
+                            html += `<li><a href="${f.url}" download>${f.ext} - ${Math.round((f.filesize||0)/1024/1024*100)/100||'?'} MB</a></li>`;
                         }
                     });
                     html += '</ul>';
