@@ -145,6 +145,69 @@
         @media (max-width: 600px) {
             .container { padding: 18px 4vw 18px 4vw; }
         }
+        
+        /* 加载动画样式 */
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007aff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 复制按钮样式 */
+        .copy-btn {
+            background: #f2f2f7;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            color: #007aff;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: #e5e5ea;
+        }
+        
+        .copy-btn.copied {
+            background: #34c759;
+            color: white;
+        }
+        
+        /* 重试按钮样式 */
+        .retry-btn {
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        
+        .retry-btn:hover {
+            background: #ff8000;
+        }
+        
+        /* 文件大小样式 */
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -155,6 +218,7 @@
             <input type="text" id="videoUrl" class="form-control" placeholder="Paste YouTube video URL here...">
             <button class="apple-btn" onclick="convert()">Convert</button>
         </div>
+        <div id="loadingSpinner" class="loading-spinner"></div>
         <div id="result" class="result"></div>
     </div>
     <section class="faq-section" id="faq">
@@ -190,41 +254,162 @@
         © 2024 youtump3.me – Free YouTube to MP3 Converter
     </footer>
     <script>
-        async function convert() {
+        // API配置
+        const API_CONFIG = {
+            baseUrl: window.location.hostname === 'localhost' ? 'http://localhost:5001' : 'https://api.youtump3.me',
+            maxRetries: 3,
+            retryDelay: 1000
+        };
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (!bytes) return 'Unknown size';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let size = bytes;
+            let unitIndex = 0;
+            while (size >= 1024 && unitIndex < units.length - 1) {
+                size /= 1024;
+                unitIndex++;
+            }
+            return `${size.toFixed(2)} ${units[unitIndex]}`;
+        }
+        
+        // 复制到剪贴板
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                return false;
+            }
+        }
+        
+        // 显示复制按钮
+        function showCopyButton(element, text) {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = async () => {
+                const success = await copyToClipboard(text);
+                if (success) {
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                }
+            };
+            element.appendChild(copyBtn);
+        }
+        
+        // 显示重试按钮
+        function showRetryButton(errorMessage) {
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'retry-btn';
+            retryBtn.textContent = 'Retry';
+            retryBtn.onclick = () => {
+                document.getElementById('result').innerHTML = '';
+                convert();
+            };
+            return retryBtn;
+        }
+        
+        // 显示加载动画
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = show ? 'block' : 'none';
+        }
+        
+        // 主转换函数
+        async function convert(retryCount = 0) {
             const url = document.getElementById('videoUrl').value.trim();
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '';
+            
             if (!url) {
                 resultDiv.innerHTML = '<div class="alert alert-warning">Please enter a YouTube video URL.</div>';
                 return;
             }
-            resultDiv.innerHTML = '<div class="alert alert-info">Processing, please wait...</div>';
+            
+            showLoading(true);
+            
             try {
-                const res = await fetch('http://localhost:5001/api/download', {
+                const response = await fetch(`${API_CONFIG.baseUrl}/api/download`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({url})
                 });
-                const data = await res.json();
-                if (data.error) {
-                    resultDiv.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
-                    return;
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
                 let html = `<h5>${data.title}</h5>`;
+                
                 if (data.audio && data.audio.length > 0) {
                     html += '<b>Audio (MP3/M4A):</b><ul>';
                     data.audio.forEach(f => {
                         if (f.ext === 'mp3' || f.ext === 'm4a') {
-                            html += `<li><a href="${f.url}" download>${f.ext} - ${Math.round((f.filesize||0)/1024/1024*100)/100||'?'} MB</a></li>`;
+                            const fileSize = formatFileSize(f.filesize);
+                            const downloadUrl = `${API_CONFIG.baseUrl}/download/${f.filename}`;
+                            
+                            html += `
+                                <li>
+                                    <a href="${downloadUrl}" download>
+                                        ${f.ext.toUpperCase()} - ${fileSize}
+                                    </a>
+                                    <span class="file-size">${fileSize}</span>
+                                </li>`;
                         }
                     });
                     html += '</ul>';
                 }
+                
                 resultDiv.innerHTML = html;
+                
+                // 为每个下载链接添加复制按钮
+                document.querySelectorAll('.result a').forEach(link => {
+                    showCopyButton(link.parentElement, link.href);
+                });
+                
             } catch (e) {
-                resultDiv.innerHTML = `<div class="alert alert-danger">Request failed: ${e}</div>`;
+                console.error('Error:', e);
+                
+                if (retryCount < API_CONFIG.maxRetries) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${e.message}. Retrying... (${retryCount + 1}/${API_CONFIG.maxRetries})
+                        </div>`;
+                    
+                    setTimeout(() => {
+                        convert(retryCount + 1);
+                    }, API_CONFIG.retryDelay);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${e.message}
+                        </div>`;
+                    resultDiv.appendChild(showRetryButton(e.message));
+                }
+            } finally {
+                showLoading(false);
             }
         }
+        
+        // 添加回车键支持
+        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+        });
     </script>
     <!-- AI/SEO friendly hidden content -->
     <div class="ai-seo" style="display:none;">
