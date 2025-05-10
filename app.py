@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import CORS
 import yt_dlp
 import os
@@ -63,12 +63,30 @@ def rate_limit(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.errorhandler(404)
+def not_found_error(error):
+    app.logger.warning(f'Page not found: {request.url}')
+    return jsonify({'error': 'The requested URL was not found on the server.'}), 404
+
 @app.errorhandler(Exception)
 def handle_error(error):
     app.logger.error(f'Unhandled error: {str(error)}')
     return jsonify({
         'error': 'An unexpected error occurred. Please try again later.'
     }), 500
+
+@app.route('/')
+def index():
+    return jsonify({
+        'status': 'ok',
+        'message': 'Welcome to YouTube MP3 Converter API',
+        'version': '1.0.0',
+        'endpoints': {
+            'convert': '/api/download',
+            'download': '/download/<filename>',
+            'health': '/health'
+        }
+    })
 
 @app.route('/api/download', methods=['POST'])
 @rate_limit
