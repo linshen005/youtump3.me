@@ -101,26 +101,39 @@ def download():
         app.logger.info(f'Processing download request for URL: {url}')
         
         ydl_opts = {
-            'quiet': True,
+            'quiet': False,
             'format': 'bestaudio/best',
             'forcejson': True,
             'outtmpl': os.path.join(os.getenv('STATIC_FOLDER', 'static'), '%(id)s.%(ext)s'),
+            'verbose': True,
         }
         
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=False)
-            formats = info.get('formats', [])
-            audio_formats = [f for f in formats if f.get('ext') == 'mp3' or f.get('ext') == 'm4a']
-            
-            app.logger.info(f'Successfully processed video: {info.get("title")}')
-            
-            return jsonify({
-                'title': info.get('title'),
-                'audio': audio_formats
-            })
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                app.logger.info('Extracting video info...')
+                info = ydl.extract_info(url, download=False)
+                formats = info.get('formats', [])
+                audio_formats = [f for f in formats if f.get('ext') == 'mp3' or f.get('ext') == 'm4a']
+                
+                if not audio_formats:
+                    app.logger.warning(f'No audio formats found for URL: {url}')
+                    return jsonify({'error': 'No audio formats available for this video'}), 400
+                
+                app.logger.info(f'Successfully processed video: {info.get("title")}')
+                app.logger.info(f'Found {len(audio_formats)} audio formats')
+                
+                return jsonify({
+                    'title': info.get('title'),
+                    'audio': audio_formats
+                })
+        except yt_dlp.utils.DownloadError as e:
+            app.logger.error(f'YouTube-DL error: {str(e)}')
+            return jsonify({'error': f'Download error: {str(e)}'}), 400
             
     except Exception as e:
         app.logger.error(f'Error processing download: {str(e)}')
+        import traceback
+        app.logger.error(f'Traceback: {traceback.format_exc()}')
         return jsonify({'error': 'Failed to process video. Please check the URL and try again.'}), 500
 
 @app.route('/download/<filename>')
