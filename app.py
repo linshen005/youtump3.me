@@ -14,13 +14,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/*": {
-        "origins": os.getenv('CORS_ORIGINS', 'https://youtump3.me').split(','),
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
-    }
-})
+# 使用更宽松的CORS配置
+CORS(app, origins=["http://localhost:8000", "https://youtomp3.me", "https://youtomp3.pages.dev"], 
+     methods=["GET", "POST", "OPTIONS"], 
+     allow_headers=["Content-Type", "Authorization", "X-Requested-With"])
 
 # 配置日志
 if not os.path.exists('logs'):
