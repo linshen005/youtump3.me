@@ -353,26 +353,15 @@
                 }
                 
                 let html = `<h5>${data.title}</h5>`;
-                
-                if (data.audio && data.audio.length > 0) {
-                    html += '<b>Audio (MP3/M4A):</b><ul>';
-                    data.audio.forEach(f => {
-                        if (f.ext === 'mp3' || f.ext === 'm4a') {
-                            const fileSize = formatFileSize(f.filesize);
-                            const downloadUrl = `${API_CONFIG.baseUrl}/download/${f.filename}`;
-                            
-                            html += `
-                                <li>
-                                    <a href="${downloadUrl}" download>
-                                        ${f.ext.toUpperCase()} - ${fileSize}
-                                    </a>
-                                    <span class="file-size">${fileSize}</span>
-                                </li>`;
-                        }
-                    });
-                    html += '</ul>';
+                if (data.filename) {
+                    html += `<b>Download:</b><ul>
+                        <li>
+                            <a href="${API_CONFIG.baseUrl}/download/${data.filename}" download>
+                                Download Audio
+                            </a>
+                        </li>
+                    </ul>`;
                 }
-                
                 resultDiv.innerHTML = html;
                 
                 // 为每个下载链接添加复制按钮
