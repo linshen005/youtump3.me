@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1XWSZNPRXJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1XWSZNPRXJ');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube to MP3 Converter | youtomp3.me</title>
+    <meta name="description" content="Convert YouTube videos to MP3 online for free. Fast, easy, and high-quality YouTube to MP3 conversion. No registration required.">
+    <meta name="keywords" content="YouTube to MP3, YouTube converter, online video converter, free mp3 download, youtomp3.me, YouTube to MP3">
+    <meta name="author" content="youtomp3.me">
+    <meta name="language" content="en">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="YouTube to MP3 Converter | youtomp3.me">
+    <meta property="og:description" content="Convert YouTube videos to MP3 online for free. Fast, easy, and high-quality YouTube to MP3 conversion. No registration required.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://youtomp3.me/">
+    <meta property="og:site_name" content="youtomp3.me">
+    <link rel="canonical" href="https://youtomp3.me/">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "YouTube to MP3 Converter",
+      "url": "https://youtomp3.me/",
+      "description": "Convert YouTube videos to MP3 online for free. Fast, easy, and high-quality YouTube to MP3 conversion. No registration required.",
+      "inLanguage": "en",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://youtomp3.me/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <style>
+        body {
+            background: #f2f2f7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            color: #222;
+        }
+        .container {
+            max-width: 500px;
+            margin: 48px auto 32px auto;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 40px 28px 32px 28px;
+        }
+        h1, h2, h3, h4, h5 {
+            font-weight: 600;
+            color: #222;
+        }
+        .apple-btn {
+            background: #007aff;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,122,255,0.08);
+            transition: background 0.2s;
+        }
+        .apple-btn:hover {
+            background: #005ecb;
+        }
+        .input-group input {
+            border-radius: 12px 0 0 12px;
+            border-right: none;
+            font-size: 1.1rem;
+        }
+        .input-group .apple-btn {
+            border-radius: 0 12px 12px 0;
+        }
+        .result {
+            margin-top: 32px;
+        }
+        .result ul {
+            padding-left: 18px;
+        }
+        .result li {
+            margin-bottom: 8px;
+        }
+        .faq-section {
+            background: #f8f9fa;
+            border-radius: 18px;
+            margin-top: 40px;
+            padding: 28px 20px 18px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .faq-title {
+            color: #007aff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .faq-icon {
+            font-size: 1.6rem;
+            margin-right: 10px;
+        }
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .faq-item {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 18px 18px 14px 18px;
+            transition: box-shadow 0.2s;
+        }
+        .faq-item:hover {
+            box-shadow: 0 4px 16px rgba(0,122,255,0.10);
+        }
+        .faq-q {
+            font-weight: 600;
+            font-size: 1.08rem;
+            margin-bottom: 8px;
+            color: #222;
+            display: flex;
+            align-items: center;
+        }
+        .faq-a {
+            color: #444;
+            font-size: 1rem;
+            padding-left: 2px;
+            line-height: 1.6;
+        }
+        footer {
+            color: #888;
+            font-size: 0.98rem;
+            text-align: center;
+            margin-top: 40px;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 18px 4vw 18px 4vw; }
+        }
+        
+        /* 加载动画样式 */
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007aff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 复制按钮样式 */
+        .copy-btn {
+            background: #f2f2f7;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            color: #007aff;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 8px;
+        }
+        
+        .copy-btn:hover {
+            background: #e5e5ea;
+        }
+        
+        .copy-btn.copied {
+            background: #34c759;
+            color: white;
+        }
+        
+        /* 重试按钮样式 */
+        .retry-btn {
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+        
+        .retry-btn:hover {
+            background: #ff8000;
+        }
+        
+        /* 文件大小样式 */
+        .file-size {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">YouTube to MP3 Converter</h1>
+        <p class="lead text-center mb-4">Convert any YouTube video to MP3 format instantly and for free.</p>
+        <div class="input-group mb-3">
+            <input type="text" id="videoUrl" class="form-control" placeholder="Paste YouTube video URL here...">
+            <button class="apple-btn" onclick="convert()">Convert</button>
+        </div>
+        <div id="loadingSpinner" class="loading-spinner"></div>
+        <div id="result" class="result"></div>
+    </div>
+    <section class="faq-section" id="faq">
+        <h2 class="faq-title"><span class="faq-icon">❓</span> Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-q">What is youtomp3.me?</div>
+                <div class="faq-a">youtomp3.me is a free online tool that allows you to convert YouTube videos to MP3 format in high quality. No registration, no software installation, and unlimited downloads.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">How do I convert YouTube to MP3?</div>
+                <div class="faq-a">Simply paste the YouTube video URL into the input box, click Convert, and download your MP3 file instantly.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Is it legal to use YouTube to MP3 converters?</div>
+                <div class="faq-a">youtomp3.me is intended for personal, non-commercial use only. Please respect copyright laws in your country and only download content you have the right to use.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Does this work on mobile and desktop?</div>
+                <div class="faq-a">Yes! youtomp3.me works on all devices, including iPhone, iPad, Android, Mac, and Windows.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">Are there any limits or ads?</div>
+                <div class="faq-a">No. youtomp3.me is completely free, with no ads, no popups, and no download limits.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">What formats are supported?</div>
+                <div class="faq-a">You can download audio as MP3 or M4A.</div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        © 2024 youtomp3.me – Free YouTube to MP3 Converter
+    </footer>
+    <script>
+        // API配置
+        const API_CONFIG = {
+            baseUrl: 'https://youtomp3.me',
+            maxRetries: 3,
+            retryDelay: 1000
+        };
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (!bytes) return 'Unknown size';
+            const units = ['B', 'KB', 'MB', 'GB'];
+            let size = bytes;
+            let unitIndex = 0;
+            while (size >= 1024 && unitIndex < units.length - 1) {
+                size /= 1024;
+                unitIndex++;
+            }
+            return `${size.toFixed(2)} ${units[unitIndex]}`;
+        }
+        
+        // 复制到剪贴板
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                return false;
+            }
+        }
+        
+        // 显示复制按钮
+        function showCopyButton(element, text) {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = async () => {
+                const success = await copyToClipboard(text);
+                if (success) {
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                }
+            };
+            element.appendChild(copyBtn);
+        }
+        
+        // 显示重试按钮
+        function showRetryButton(errorMessage) {
+            const retryBtn = document.createElement('button');
+            retryBtn.className = 'retry-btn';
+            retryBtn.textContent = 'Retry';
+            retryBtn.onclick = () => {
+                document.getElementById('result').innerHTML = '';
+                convert();
+            };
+            return retryBtn;
+        }
+        
+        // 显示加载动画
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = show ? 'block' : 'none';
+        }
+        
+        // 主转换函数
+        async function convert(retryCount = 0) {
+            const url = document.getElementById('videoUrl').value.trim();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+            
+            if (!url) {
+                resultDiv.innerHTML = '<div class="alert alert-warning">Please enter a YouTube video URL.</div>';
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}/api/download`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                let html = `<h5>${data.title}</h5>`;
+                
+                if (data.audio && data.audio.length > 0) {
+                    html += '<b>Audio (MP3/M4A):</b><ul>';
+                    data.audio.forEach(f => {
+                        if (f.ext === 'mp3' || f.ext === 'm4a') {
+                            const fileSize = formatFileSize(f.filesize);
+                            const downloadUrl = `${API_CONFIG.baseUrl}/download/${f.filename}`;
+                            
+                            html += `
+                                <li>
+                                    <a href="${downloadUrl}" download>
+                                        ${f.ext.toUpperCase()} - ${fileSize}
+                                    </a>
+                                    <span class="file-size">${fileSize}</span>
+                                </li>`;
+                        }
+                    });
+                    html += '</ul>';
+                }
+                
+                resultDiv.innerHTML = html;
+                
+                // 为每个下载链接添加复制按钮
+                document.querySelectorAll('.result a').forEach(link => {
+                    showCopyButton(link.parentElement, link.href);
+                });
+                
+            } catch (e) {
+                console.error('Error:', e);
+                
+                if (retryCount < API_CONFIG.maxRetries) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${e.message}. Retrying... (${retryCount + 1}/${API_CONFIG.maxRetries})
+                        </div>`;
+                    
+                    setTimeout(() => {
+                        convert(retryCount + 1);
+                    }, API_CONFIG.retryDelay);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${e.message}
+                        </div>`;
+                    resultDiv.appendChild(showRetryButton(e.message));
+                }
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // 添加回车键支持
+        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+        });
+    </script>
+    <!-- AI/SEO friendly hidden content -->
+    <div class="ai-seo" style="display:none;">
+        <h2>YouTube to MP3 Online Converter</h2>
+        <p>youtomp3.me is a free online tool that allows you to convert YouTube videos to MP3 format in high quality. No registration, no software installation, and unlimited downloads. Simply paste your YouTube link and get your audio file instantly.</p>
+        <ul>
+            <li>Fast and secure YouTube to MP3 conversion</li>
+            <li>Works on all devices: PC, Mac, Android, iOS</li>
+            <li>Supports all YouTube video links</li>
+            <li>Download MP3 files with one click</li>
+            <li>No ads, no popups, no registration</li>
+            <li>Best YouTube to MP3 converter for 2024</li>
+        </ul>
+        <p>Convert YouTube to MP3 and enjoy your favorite music offline. youtomp3.me is optimized for search engines and AI, providing the best user experience for global users.</p>
+    </div>
+    <noscript>
+        <div>
+            <h2>YouTube to MP3 Converter</h2>
+            <p>Convert YouTube videos to MP3 online for free. No registration required. Fast, easy, and high-quality conversion for global users.</p>
+        </div>
+    </noscript>
+</body>
+</html>

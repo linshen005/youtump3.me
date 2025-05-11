@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# 虚拟环境
+.venv/
+env/
+venv/
+
+# Node
+node_modules/
+
+# Mac
+.DS_Store
+
+# 其它你不想提交的文件
+logs/
+.env
