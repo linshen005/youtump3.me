@@ -357,7 +357,16 @@
                     html += `<b>Download:</b><ul>
                         <li>
                             <a href="${API_CONFIG.baseUrl}/download/${data.filename}" download>
-                                Download Audio
+                                Download Audio (MP3)
+                            </a>
+                        </li>
+                    </ul>`;
+                }
+                if (data.video_filename) {
+                    html += `<ul>
+                        <li>
+                            <a href="${API_CONFIG.baseUrl}/download/${data.video_filename}" download>
+                                Download Video (MP4/WEBM)
                             </a>
                         </li>
                     </ul>`;
